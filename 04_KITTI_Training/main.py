@@ -34,7 +34,7 @@ for i_batch, (image, pose_list) in enumerate(training_dataloader):
                 .format(pose_list[0], pose_list[1], pose_list[2], pose_list[3], pose_list[4], pose_list[5]))
 
     # # 해당 이미지 출력
-    image = np.array(image)
+    image = image.numpy()
     image = image.reshape(376, 1241, 3)
     cv.imshow('img', image)
     cv.waitKey(0)
