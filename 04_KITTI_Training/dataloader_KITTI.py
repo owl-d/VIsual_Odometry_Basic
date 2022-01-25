@@ -2,6 +2,10 @@ import h5py
 
 import torch
 import torch.utils.data
+from torchvision.io import read_image
+
+import numpy as np
+import cv2 as cv
 
 class KITTI_dataset(torch.utils.data.Dataset):
 
@@ -21,12 +25,19 @@ class KITTI_dataset(torch.utils.data.Dataset):
         for i in range(7):
             info[i] = str(info[i], 'utf-8')
 
-        sample = {'path': info[0], 'x': info[1], 'y' : info[2], 'z' : info[3],
-                    'roll' : info[4], 'pitch' : info[5], 'yaw' : info[6]}
+        # image = read_image(str(info[0]))
+        image = cv.imread(info[0])
+        # image = np.transpose(image, (2, 0, 1))
+        # image = image.astype(np.float)
+        # image /= 255.0
+        # print(image)
+        # cv.imshow('img', image)
+
+        pose_list = [info[1], info[2], info[3], info[4], info[5], info[6]]
 
         info_file.close()
 
-        return sample
+        return image, pose_list
 
     def __len__(self):
 
@@ -39,5 +50,5 @@ class KITTI_dataset(torch.utils.data.Dataset):
 #mode : training / validation / test
 if __name__ == '__main__':
     kitti_dataset = KITTI_dataset(dataset_path='KITTI_dataset_info.hdf5', mode='training')
-    kitti_dataset.__getitem__(10)
+    kitti_dataset.__getitem__(0)
     kitti_dataset.__len__()

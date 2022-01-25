@@ -1,6 +1,7 @@
 from torch.utils.data import DataLoader
 
 import cv2 as cv
+import numpy as np
 
 from dataset_generator_KITTI import KITTI_dataset_generator
 from dataloader_KITTI import KITTI_dataset
@@ -25,18 +26,17 @@ test_dataloader = DataLoader(dataset=kitti_dataset_test, batch_size=1, shuffle=F
 
 
 # if __name__ == '__main__':
-for i_batch, sample_batched in enumerate(training_dataloader):
+for i_batch, (image, pose_list) in enumerate(training_dataloader):
 
-    # 6DoF 출력
+    # # 6DoF 출력
     print('batch', i_batch, end=' ')
     print("pose(6DoF) : \n x : {}, y : {}, z : {} \n roll : {}, pitch : {}, yaw : {}"
-                .format(sample_batched['x'], sample_batched['y'], sample_batched['z'],
-                sample_batched['roll'], sample_batched['pitch'], sample_batched['yaw']))
+                .format(pose_list[0], pose_list[1], pose_list[2], pose_list[3], pose_list[4], pose_list[5]))
 
-    # 해당 이미지 출력
-    idx_img_path = sample_batched['path']
-    idx_img = cv.imread(str(idx_img_path[0]), cv.IMREAD_COLOR)
-    cv.imshow('idx_img', idx_img)
+    # # 해당 이미지 출력
+    image = np.array(image)
+    image = image.reshape(376, 1241, 3)
+    cv.imshow('img', image)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
