@@ -78,6 +78,7 @@ class KITTI_dataset_generator():
             seq_pose_file.close()
 
 
-
-kitti = KITTI_dataset_generator(dataset_save_path='KITTI_dataset_info.hdf5',
+if __name__ == '__main__': 
+    kitti = KITTI_dataset_generator(dataset_save_path='KITTI_dataset_info.hdf5',
                                 dataset_path='/media/doyu/Linux Workspace/ICSL_Project/Visual SLAM/KITTI_data_odometry_color')
+

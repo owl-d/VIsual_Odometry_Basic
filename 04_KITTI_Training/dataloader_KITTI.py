@@ -1,8 +1,9 @@
 import h5py
-import cv2 as cv
 
+import torch
+import torch.utils.data
 
-class KITTI_dataset():
+class KITTI_dataset(torch.utils.data.Dataset):
 
     def __init__(self, dataset_path='', mode='training'):
 
@@ -20,19 +21,23 @@ class KITTI_dataset():
         for i in range(7):
             info[i] = str(info[i], 'utf-8')
 
-        # 6DoF 출력
-        print("pose(6DoF) : \n x : {}, y : {}, z : {} \n roll : {}, pitch : {}, yaw : {}"
-        .format(info[1], info[2], info[3], info[4], info[5], info[6]))
-
-        # 해당 이미지 출력
-        idx_img_path = info[0]
-        idx_img = cv.imread(idx_img_path, cv.IMREAD_COLOR)
-        cv.imshow('idx_img', idx_img)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+        sample = {'path': info[0], 'x': info[1], 'y' : info[2], 'z' : info[3],
+                    'roll' : info[4], 'pitch' : info[5], 'yaw' : info[6]}
 
         info_file.close()
 
+        return sample
+
+    def __len__(self):
+
+        file = h5py.File(self.dataset_path, 'r') #파일 열기
+        self.len = file.get('/' + self.mode + '_group/').__len__()
+        file.close()
+
+        return self.len
+
 #mode : training / validation / test
-kitti_data = KITTI_dataset(dataset_path='KITTI_dataset_info.hdf5', mode='training')
-kitti_data.__getitem__(0)
+if __name__ == '__main__':
+    kitti_dataset = KITTI_dataset(dataset_path='KITTI_dataset_info.hdf5', mode='training')
+    kitti_dataset.__getitem__(10)
+    kitti_dataset.__len__()
