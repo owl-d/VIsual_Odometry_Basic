@@ -22,10 +22,13 @@ class KITTI_dataset(torch.utils.data.Dataset):
         info = list(info_file[info_location])
         for i in range(7):
             info[i] = str(info[i], 'utf-8')
+        for i in range(6):
+            info[i+1] = float(info[i+1])
 
         image = cv.imread(info[0])
 
         pose_list = [info[1], info[2], info[3], info[4], info[5], info[6]]
+        pose_list = torch.Tensor(pose_list)
 
         info_file.close()
 
