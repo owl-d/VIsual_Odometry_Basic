@@ -54,7 +54,7 @@ class KITTI_dataset_generator():
                 ### transformation matix 로 pose 계산 : 6DoF #############################################################################
                 matrix = seq_pose_file.readline() #transformation matrix
                 pose = matrix.strip().split()
-                pose_T = np.array([float(pose[3]), float(pose[7]), float(pose[11])])     #translation matrix
+                pose_T = np.array([float(pose[3]), float(pose[7]), float(pose[11])])  #translation matrix
                 pose_R = np.array([[float(pose[0]), float(pose[1]), float(pose[2])],  #rotation matrix
                                     [float(pose[4]), float(pose[5]), float(pose[6])], 
                                     [float(pose[8]), float(pose[9]), float(pose[10])]])
@@ -68,10 +68,12 @@ class KITTI_dataset_generator():
                 ########################################################################################################################
                 
                 # 샘플 별 이미지 path, pose h5py에 입력
-                img_path=str(self.image_dataset_path + '/' + sequence + '/image_2' + '/' + seq_idx).encode('utf-8')
+                img_path=str(self.image_dataset_path + '/' + sequence + '/image_2' + '/' + seq_idx).encode('utf-8') #utf-8로 encoding
+                                                                                                                    #image_2 : 두번째 컬러 카메라
                 sub_group.create_dataset(name=str(idx).zfill(10),
                                             data=[img_path, x, y, z, roll, pitch, yaw],
-                                            compression='gzip', compression_opts=9)
+                                            compression='gzip', compression_opts=9)     #90% 압축하여 저장 속도를 빠르게 할 수 있다.
+                                                                                        #만약 이미지 경로가 아닌 이미지 자체를 넣는 등 파일이 커지는 경우 효과적이다.
                 
                 idx += 1
 
