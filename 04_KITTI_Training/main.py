@@ -1,6 +1,5 @@
 from torch.utils.data import DataLoader
 import torch
-from sklearn import preprocessing
 
 import cv2 as cv
 import numpy as np
@@ -27,7 +26,7 @@ validation_dataloader = DataLoader(dataset=kitti_dataset_validation, batch_size=
 test_dataloader = DataLoader(dataset=kitti_dataset_test, batch_size=1, shuffle=False, num_workers=0)
 
 
-# # if __name__ == '__main__':
+# if __name__ == '__main__':
 for i_batch, (image, pose_list) in enumerate(training_dataloader):
 
     #dataloader가 주는 데이터의 shape
