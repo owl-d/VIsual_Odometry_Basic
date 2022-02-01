@@ -22,7 +22,7 @@ kitti_dataset_validation = KITTI_dataset(dataset_path='KITTI_dataset_info.hdf5',
 kitti_dataset_test = KITTI_dataset(dataset_path='KITTI_dataset_info.hdf5', mode='test')
 
 #데이터로더
-training_dataloader = DataLoader(dataset=kitti_dataset_training, batch_size=2, shuffle=False, num_workers=0)
+training_dataloader = DataLoader(dataset=kitti_dataset_training, batch_size=3, shuffle=False, num_workers=0)
 validation_dataloader = DataLoader(dataset=kitti_dataset_validation, batch_size=1, shuffle=False,num_workers=0)
 test_dataloader = DataLoader(dataset=kitti_dataset_test, batch_size=1, shuffle=False, num_workers=0)
 
@@ -54,9 +54,15 @@ for i_batch, (image, pose_list) in enumerate(training_dataloader):
         img = image[i]
         img = img.numpy()
         img = cv.resize(img, dsize=(620, 188), interpolation=cv.INTER_LINEAR)
-        cv.imshow('img', img)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+
+        if i==0:
+            addh = img
+        else:
+            addh = np.hstack((addh, img))
+        
+    cv.imshow('image', addh)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
     # 처음 두 개 샘플만 보여주기
     if i_batch == 0:
