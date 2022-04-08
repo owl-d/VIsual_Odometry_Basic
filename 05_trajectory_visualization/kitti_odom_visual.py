@@ -14,7 +14,7 @@ def process(line):
 
     ##################################################################################################
 
-file_path = '/media/doyu_now/Linux Workspace/ICSL_Project/Visual SLAM/KITTI_data_odometry_color/data_odometry_poses/dataset/poses/06.txt'
+file_path = '/media/doyu_now/Linux Workspace/ICSL_Project/Visual SLAM/KITTI_data_odometry_color/data_odometry_poses/dataset/poses/10.txt'
 with open(file_path, 'r') as f:
     while True:
 
@@ -27,5 +27,5 @@ with open(file_path, 'r') as f:
 
 plt.plot(x_list, y_list, 'ob')
 
-plt.title('kitti odom - scenario 04')
+plt.title('kitti odom - scenario 10')
 plt.show()
