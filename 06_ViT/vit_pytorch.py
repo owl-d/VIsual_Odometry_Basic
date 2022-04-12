@@ -10,12 +10,12 @@ class Residual(nn.Module):
         self.fn = fn
 
     def forward(self, x, **kwargs):
-        return self.fn(x, **kwargs) + x
+        return self.fn(x, **kwargs) + x #Residual Connection
 
 class PreNorm(nn.Module):
     def __init__(self, dim, fn):
         super().__init__()
-        self.norm = nn.LayerNorm(dim)
+        self.norm = nn.LayerNorm(dim) #입력의 미니 배치에 대해 레이어 정규화 적용
         self.fn = fn
 
     def forward(self, x, **kwargs):
@@ -25,16 +25,16 @@ class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(dim, hidden_dim),
-            nn.GELU(),
-            nn.Linear(hidden_dim, dim)
+            nn.Linear(dim, hidden_dim), #linear transformation
+            nn.GELU(),                  #GELU(Gaussian Error Linear Unit)
+            nn.Linear(hidden_dim, dim)  #linear transformation
         )
 
     def forward(self, x):
         return self.net(x)
 
 class Attention(nn.Module):
-    def __init__(self, dim, heads=8):
+    def __init__(self, dim, heads=8): #num_head=8개
         super().__init__()
         self.heads = heads
         self.scale = dim ** -0.5
@@ -44,16 +44,16 @@ class Attention(nn.Module):
 
     def forward(self, x, mask = None):
         b, n, _, h = *x.shape, self.heads
-        qkv = self.to_qkv(x)
+        qkv = self.to_qkv(x)    #각 단어의 임베딩 이용해 query, key, value 생성
         q, k, v = rearrange(qkv, 'b n (qkv h d) -> qkv b h n d', qkv=3, h=h)
 
-        dots = torch.einsum('bhid,bhjd->bhij', q, k) * self.scale
+        dots = torch.einsum('bhid,bhjd->bhij', q, k) * self.scale   #Einstein summation convention
 
         if mask is not None:
             mask = F.pad(mask.flatten(1), (1, 0), value = True)
             assert mask.shape[-1] == dots.shape[-1], 'mask has incorrect dimensions'
             mask = mask[:, None, :] * mask[:, :, None]
-            dots.masked_fill_(~mask, float('-inf'))
+            dots.masked_fill_(~mask, float('-inf')) #음의 무한대 값 대입
             del mask
 
         attn = dots.softmax(dim=-1)
@@ -88,7 +88,7 @@ class ViT(nn.Module):
 
         self.patch_size = patch_size
 
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim)) 
         self.patch_to_embedding = nn.Linear(patch_dim, dim)
         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
         self.transformer = Transformer(dim, depth, heads, mlp_dim)
